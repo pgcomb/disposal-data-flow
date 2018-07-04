@@ -1,7 +1,7 @@
 package com.github.pgcomb.ddf;
 
 import com.github.pgcomb.ddf.exception.SuckerException;
-import com.github.pgcomb.ddf.reader.FileSucker;
+import com.github.pgcomb.ddf.sucker.FileSucker;
 
 import java.io.File;
 

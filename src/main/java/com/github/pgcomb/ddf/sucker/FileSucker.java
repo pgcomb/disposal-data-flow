@@ -1,6 +1,9 @@
-package com.github.pgcomb.ddf.reader;
+package com.github.pgcomb.ddf.sucker;
 
 import com.github.pgcomb.ddf.exception.SuckerException;
+import com.github.pgcomb.ddf.sucker.reader.GeneralReader;
+import com.github.pgcomb.ddf.sucker.reader.NullReader;
+import com.github.pgcomb.ddf.sucker.reader.Reader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -20,20 +23,20 @@ public class FileSucker implements Sucker {
 
     private int currentFile = 0;
 
-    private BufferedReader currentIn;
+    private Reader currentIn = new NullReader();
 
     private long count = 0;
 
-    public FileSucker(File f, String coding) throws SuckerException {
+    public FileSucker(File f, String coding) {
         this.fileCoding = coding;
         init(f);
     }
 
-    public FileSucker(File f) throws SuckerException {
+    public FileSucker(File f) {
         this(f,"gbk");
     }
 
-    private void init(File f) throws SuckerException {
+    private void init(File f)  {
        if (f.isFile()){
            inputs = Collections.singletonList(f);
        }else {
@@ -44,17 +47,16 @@ public class FileSucker implements Sucker {
                inputs = Arrays.asList(files);
        }
         Assert.notEmpty(inputs,"There should be at least one file");
-        nextInput();
     }
     public String next() throws SuckerException {
         try {
             String read;
             if (currentIn != null){
-                read = currentIn.readLine();
+                read = currentIn.read();
                 while (read == null && currentIn != null){
                     nextInput();
                     if (currentIn != null)
-                        read = currentIn.readLine();
+                        read = currentIn.read();
                 }
                 count++;
                 return read;
@@ -77,8 +79,7 @@ public class FileSucker implements Sucker {
             if (inputs.size() <= currentFile){
                 currentIn = null;
             } else {
-                currentIn = new BufferedReader(new FileReader(inputs.get(currentFile)));
-                currentIn = new BufferedReader(new InputStreamReader(new FileInputStream(inputs.get(currentFile)),fileCoding));
+                currentIn = new GeneralReader(new BufferedReader(new InputStreamReader(new FileInputStream(inputs.get(currentFile)),fileCoding)));
                 log.info("read file[{}]",inputs.get(currentFile));
                 currentFile++;
             }

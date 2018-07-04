@@ -1,4 +1,4 @@
-package com.github.pgcomb.ddf.reader;
+package com.github.pgcomb.ddf.sucker;
 
 import com.github.pgcomb.ddf.exception.SuckerException;
 
