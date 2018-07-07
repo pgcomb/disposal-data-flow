@@ -4,9 +4,17 @@ import com.github.pgcomb.ddf.map.AbstractPipelineMapper;
 import com.github.pgcomb.ddf.map.MapPair;
 import com.github.pgcomb.ddf.map.api.Payload;
 import com.github.pgcomb.ddf.map.api.Principal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * 字符串分割mapper
+ * @author 王东旭
+ */
 public class SplitMapper extends AbstractPipelineMapper<String,Principal,Payload> {
 
+    private static final Logger log = LoggerFactory.getLogger(SplitMapper.class);
+    
     private String separator;
 
     private static final String NAME = "mapper";
@@ -29,8 +37,9 @@ public class SplitMapper extends AbstractPipelineMapper<String,Principal,Payload
             stringPrincipal = new StringPrincipal(split[0]);
             stringPayload = new StringPayload(split[1]);
         }
-        System.out.println(new MapPair<>(stringPrincipal, stringPayload));
-        return new MapPair<>(stringPrincipal, stringPayload);
+        MapPair<Principal, Payload> mss = new MapPair<>(stringPrincipal, stringPayload);
+        log.info("input[{}],mapper[{}]",in,mss);
+        return mss;
     }
 
     @Override

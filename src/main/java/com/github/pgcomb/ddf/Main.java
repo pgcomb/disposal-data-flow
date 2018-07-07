@@ -69,11 +69,8 @@ public class Main {
             fileBucket.addPipe(new DefaultPipelineSucker("1"));
             fileBucket.addPipe(new DefaultPipelineSucker("2"));
             fileBucket.addPipe(defaultPipelineSucker3);
-            System.out.println("fileBucket.isStop()"+fileBucket.isStop());
-            System.out.println("fileBucket.getPipes().get(0).isStop()"+fileBucket.getPipes().get(0).isStop());
             fileBucket.topple();
-            System.out.println("fileBucket.isStop()"+fileBucket.isStop());
-            System.out.println("fileBucket.getPipes().get(0).isStop()"+fileBucket.getPipes().get(0).isStop());
+
         }
     }
 }

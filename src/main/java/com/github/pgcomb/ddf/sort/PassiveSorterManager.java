@@ -31,7 +31,7 @@ public class PassiveSorterManager<T extends MapPair> implements Sorter<T>,Convey
 
     @Override
     public void stop() {
-
+        log.info("sorter stop");
     }
 
     @Override
