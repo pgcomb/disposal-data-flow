@@ -1,4 +1,4 @@
-package com.github.pgcomb.ddf.map;
+package com.github.pgcomb.ddf.map.api;
 
 public interface Groupable<T> {
 

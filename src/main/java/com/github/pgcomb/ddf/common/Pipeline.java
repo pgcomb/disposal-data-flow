@@ -6,7 +6,7 @@ package com.github.pgcomb.ddf.common;
  * @author 王东旭
  * @date 2018-07-06
  */
-public interface Pipeline<I,O> {
+public interface Pipeline<I,O> extends Stoppable {
 
     /**
      * 管道方法

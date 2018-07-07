@@ -1,10 +1,14 @@
-package com.github.pgcomb.ddf.bucket.sucker;
+package com.github.pgcomb.ddf.def;
 
-import com.github.pgcomb.ddf.common.Nameable;
+import com.github.pgcomb.ddf.bucket.sucker.AbstractAbstractPipelineSucker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultPipelineSucker extends AbstractPipelineSucker<String,String> implements Nameable {
+/**
+ * 简单的一个吸取管道
+ * @author 王东旭
+ */
+public class DefaultPipelineSucker extends AbstractAbstractPipelineSucker<String,String> {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultPipelineSucker.class);
 
@@ -16,10 +20,7 @@ public class DefaultPipelineSucker extends AbstractPipelineSucker<String,String>
 
     @Override
     public String handlePipe(String in) {
-        log.info("{}:{}",getName(),in);
-        if (name.equals("3")&&in.equals("file2-1")){
-            stop();
-        }
+        log.debug("{}:{}",getName(),in);
         return in;
     }
 
