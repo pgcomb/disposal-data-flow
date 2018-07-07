@@ -1,4 +1,4 @@
-package com.github.pgcomb.ddf.bucket;
+package com.github.pgcomb.ddf.bucket.sucker;
 
 import jdk.nashorn.internal.objects.annotations.Function;
 

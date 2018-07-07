@@ -1,14 +1,12 @@
 package com.github.pgcomb.ddf.bucket;
 
-import com.github.pgcomb.ddf.Stoppable;
+import com.github.pgcomb.ddf.bucket.sucker.Sucker;
+import com.github.pgcomb.ddf.common.Stoppable;
 import com.github.pgcomb.ddf.sucker.FileSucker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -22,18 +20,24 @@ public class FileBucket extends AbstractSuckerBucket<String> {
 
     private File file;
 
-    public FileBucket(File file) {
+    private String charsetName;
+
+    public FileBucket(File file,String charsetName) {
         this.file = file;
+        this.charsetName = charsetName;
     }
 
+    public FileBucket(File file){
+        this(file,"gbk");
+    }
     @Override
     protected void flow(Sucker<String> consumer, Stoppable stop) {
         Optional.ofNullable(file.listFiles()).ifPresent(f ->
-                Arrays.stream(f).filter(File::isFile).forEach(file -> {
+                Arrays.stream(f).filter(File::isFile).forEach(fi -> {
                     if (stop.isStop()) {
                         return;
                     }
-                    try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                    try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fi),charsetName ))) {
                         String s;
                         while ((s = br.readLine()) != null && !stop.isStop()) {
                             consumer.suck(s);

@@ -1,6 +1,6 @@
-package com.github.pgcomb.ddf.bucket;
+package com.github.pgcomb.ddf.bucket.sucker;
 
-import com.github.pgcomb.ddf.Stoppable;
+import com.github.pgcomb.ddf.common.Stoppable;
 
 /**
  * @author 王东旭

@@ -1,4 +1,4 @@
-package com.github.pgcomb.ddf;
+package com.github.pgcomb.ddf.common;
 
 /**
  * @author 王东旭
