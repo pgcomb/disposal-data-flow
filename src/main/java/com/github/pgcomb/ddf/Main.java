@@ -57,6 +57,7 @@ public class Main {
     public static void test2(){
         {
             FileBucket fileBucket = new FileBucket(new File("D:\\test"));
+
             DefaultPipelineSucker defaultPipelineSucker3 = new DefaultPipelineSucker("3");
             defaultPipelineSucker3.addPipeline(new DefaultPipelineSucker("4"));
 

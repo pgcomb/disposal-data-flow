@@ -27,8 +27,4 @@ public class StringPrincipal extends AbstractPrincipal<String> {
     public int compare(String oneself, String other) {
         return oneself.compareTo(other);
     }
-
-    public static void main(String[] args) {
-        StringPrincipal stringPrincipal = new StringPrincipal(null);
-    }
 }

@@ -44,7 +44,7 @@ public class FileBucket extends AbstractSuckerBucket<String> {
                         }
                     } catch (IOException e) {
                         log.error("io error",e);
-                        stop.isStop();
+                        stop.stop();
                     }
                 })
         );
