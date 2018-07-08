@@ -44,6 +44,11 @@
             <artifactId>spring-core</artifactId>
             <version>5.0.6.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

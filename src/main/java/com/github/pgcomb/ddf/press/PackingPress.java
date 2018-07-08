@@ -1,8 +1,7 @@
 package com.github.pgcomb.ddf.press;
 
 import com.github.pgcomb.ddf.common.Conveyor;
-
-import java.util.List;
+import com.github.pgcomb.ddf.common.packagee.InMemoryDataPackage;
 
 /**
  * 打包器
@@ -21,5 +20,5 @@ public interface PackingPress<T>  {
      * 打包输出
      * @return 输出接收
      */
-    Conveyor<List<T>> conveyor();
+    Conveyor<InMemoryDataPackage<T>> conveyor();
 }

@@ -2,7 +2,7 @@ package com.github.pgcomb.ddf.def;
 
 import com.github.pgcomb.ddf.bucket.AbstractSuckerBucket;
 import com.github.pgcomb.ddf.bucket.sucker.Sucker;
-import com.github.pgcomb.ddf.common.Stoppable;
+import com.github.pgcomb.ddf.common.StopForward;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class FileBucket extends AbstractSuckerBucket<String> {
         this(file,"gbk");
     }
     @Override
-    protected void flow(Sucker<String> consumer, Stoppable stop) {
+    protected void flow(Sucker<String> consumer, StopForward stop) {
         Optional.ofNullable(file.listFiles()).ifPresent(f ->
                 Arrays.stream(f).filter(File::isFile).forEach(fi -> {
                     if (stop.isStop()) {
@@ -44,7 +44,7 @@ public class FileBucket extends AbstractSuckerBucket<String> {
                         }
                     } catch (IOException e) {
                         log.error("io error",e);
-                        stop.stop();
+                        stop.stopForward();
                     }
                 })
         );

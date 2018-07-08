@@ -16,11 +16,15 @@ public class MapPair<K extends Principal,P extends Payload>
 
     private P payload;
 
-    public MapPair(K principal, P payload) {
+    private String separator;
+
+    public MapPair(K principal, P payload,String separator) {
         Assert.notNull(principal,"principal can not null");
         Assert.notNull(payload,"payload can not null");
+        Assert.notNull(separator,"separator can not null");
         this.principal = principal;
         this.payload = payload;
+        this.separator = separator;
     }
 
     public K getPrincipal() {
@@ -39,6 +43,9 @@ public class MapPair<K extends Principal,P extends Payload>
         this.payload = payload;
     }
 
+    public String strValue(){
+        return principal.strValue().concat(separator).concat(payload.strValue());
+    }
     @Override
     public String toString() {
         return "MapPair{" +

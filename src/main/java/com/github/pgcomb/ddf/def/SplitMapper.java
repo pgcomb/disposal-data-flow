@@ -9,15 +9,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 字符串分割mapper
+ *
  * @author 王东旭
  */
-public class SplitMapper extends AbstractPipelineMapper<String,Principal,Payload> {
+public class SplitMapper extends AbstractPipelineMapper<String, Principal, Payload> {
 
     private static final Logger log = LoggerFactory.getLogger(SplitMapper.class);
-    
+
     private String separator;
 
     private static final String NAME = "mapper";
+
     public SplitMapper(String separator) {
         this.separator = separator;
     }
@@ -37,8 +39,8 @@ public class SplitMapper extends AbstractPipelineMapper<String,Principal,Payload
             stringPrincipal = new StringPrincipal(split[0]);
             stringPayload = new StringPayload(split[1]);
         }
-        MapPair<Principal, Payload> mss = new MapPair<>(stringPrincipal, stringPayload);
-        log.info("input[{}],mapper[{}]",in,mss);
+        MapPair<Principal, Payload> mss = new MapPair<>(stringPrincipal, stringPayload,separator);
+        log.debug("input[{}],mapper[{}]", in, mss);
         return mss;
     }
 

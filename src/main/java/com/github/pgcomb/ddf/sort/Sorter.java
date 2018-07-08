@@ -1,7 +1,6 @@
 package com.github.pgcomb.ddf.sort;
 
-import java.util.Collection;
-import java.util.List;
+import com.github.pgcomb.ddf.common.packagee.InMemoryDataPackage;
 
 /**
  * 排序器
@@ -15,6 +14,6 @@ public interface Sorter<T extends Comparable> {
      * @param bag 排序数据
      * @return 排序后数据
      */
-    Collection<T> sort(List<T> bag);
+    InMemoryDataPackage<T> sort(InMemoryDataPackage<T> bag);
 
 }

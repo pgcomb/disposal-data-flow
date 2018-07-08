@@ -20,6 +20,9 @@ public class DefaultPipelineSucker extends AbstractAbstractPipelineSucker<String
 
     @Override
     public String handlePipe(String in) {
+        if (getName().equals("2")){
+            stop();
+        }
         log.debug("{}:{}",getName(),in);
         return in;
     }
