@@ -22,28 +22,29 @@ public class FileBucket extends AbstractSuckerBucket<String> {
 
     private String charsetName;
 
-    public FileBucket(File file,String charsetName) {
+    public FileBucket(File file, String charsetName) {
         this.file = file;
         this.charsetName = charsetName;
     }
 
-    public FileBucket(File file){
-        this(file,"gbk");
+    public FileBucket(File file) {
+        this(file, "gbk");
     }
+
     @Override
     protected void flow(Sucker<String> consumer, StopForward stop) {
-        Optional.ofNullable(file.listFiles()).ifPresent(f ->
+        Optional.ofNullable(file.isFile() ? new File[]{file} : file.listFiles()).ifPresent(f ->
                 Arrays.stream(f).filter(File::isFile).forEach(fi -> {
                     if (stop.isStop()) {
                         return;
                     }
-                    try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fi),charsetName ))) {
+                    try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fi), charsetName))) {
                         String s;
                         while ((s = br.readLine()) != null && !stop.isStop()) {
                             consumer.suck(s);
                         }
                     } catch (IOException e) {
-                        log.error("io error",e);
+                        log.error("io error", e);
                         stop.stopForward();
                     }
                 })

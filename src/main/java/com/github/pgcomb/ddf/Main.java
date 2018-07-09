@@ -30,7 +30,7 @@ public class Main {
     }
     public static void test1(){
         {
-            FileBucket fileBucket = new FileBucket(new File("E:\\test"));
+            FileBucket fileBucket = new FileBucket(new File("D:\\test"));
 
             fileBucket.addPipe(new PipeSucker<String>() {
 
@@ -66,7 +66,7 @@ public class Main {
     }
     public static void test2(){
         {
-            FileBucket fileBucket = new FileBucket(new File("E:\\test"));
+            FileBucket fileBucket = new FileBucket(new File("D:\\test"));
 
             DefaultPipelineSucker defaultPipelineSucker3 = new DefaultPipelineSucker("3");
 
@@ -94,7 +94,7 @@ public class Main {
         }
     }
     public static void test3() throws IOException {
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("E:\\test\\a.txt"))) {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("D:\\test\\a.txt"))) {
             Random random = new Random();
             for (int i = 0; i < 5000000; i++) {
                 bufferedWriter.write(random.nextInt(10000)+"-U"+random.nextInt(10000)+"U");

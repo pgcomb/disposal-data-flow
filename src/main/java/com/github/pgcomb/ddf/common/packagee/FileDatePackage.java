@@ -3,10 +3,7 @@ package com.github.pgcomb.ddf.common.packagee;
 import com.github.pgcomb.ddf.common.Fileable;
 import org.springframework.util.Assert;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 
 public class FileDatePackage implements StreamDataPackage,Fileable {
 
@@ -29,6 +26,10 @@ public class FileDatePackage implements StreamDataPackage,Fileable {
         this.size = packageMetadata.size();
     }
 
+    public FileDatePackage(File file) {
+        this.file = file;
+    }
+
     @Override
     public File getFile() {
         return file;
@@ -37,6 +38,11 @@ public class FileDatePackage implements StreamDataPackage,Fileable {
     @Override
     public InputStream inputStream() throws FileNotFoundException {
         return new FileInputStream(getFile());
+    }
+
+    @Override
+    public OutputStream outputStream() throws FileNotFoundException {
+        return null;
     }
 
     @Override
