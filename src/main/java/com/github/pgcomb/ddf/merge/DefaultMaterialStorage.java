@@ -82,10 +82,13 @@ public class DefaultMaterialStorage implements MaterialStorage<FileDatePackage, 
         synchronized (lock) {
             int tier = materials.getTier();
             if (!CollectionUtils.isEmpty(preparePool) || !CollectionUtils.isEmpty(executingPool)){
-                List<FileDatePackage> fileDatePackages = preparePool.computeIfAbsent(0, k -> new ArrayList<>());
+                List<FileDatePackage> fileDatePackages = preparePool.computeIfAbsent(tier, k -> new ArrayList<>());
 
                 List<TierDataStream> tierDataStreams = executingPool.get(tier);
                 tierDataStreams.remove(materials);
+                if (CollectionUtils.isEmpty(tierDataStreams)){
+                    executingPool.remove(tier);
+                }
                 fileDatePackages.add(materials.getMergePackage());
             }
             examine(tier);
@@ -98,6 +101,26 @@ public class DefaultMaterialStorage implements MaterialStorage<FileDatePackage, 
             List<FileDatePackage> fileDatePackages = preparePool.computeIfAbsent(0, k -> new ArrayList<>());
             fileDatePackages.add(t);
             examine(0);
+        }
+    }
+    private void examine2(int tier) {
+        List<Map.Entry<Integer, List<FileDatePackage>>> preparePoolList =
+                preparePool.entrySet().stream().sorted(Map.Entry.comparingByKey()).collect(Collectors.toList());
+        int preSize = preparePoolList.size();
+        Integer preMix = preparePoolList.get(0).getKey();
+        List<FileDatePackage> preMixValue = preparePoolList.get(0).getValue();
+
+        List<Map.Entry<Integer, List<TierDataStream>>> executingPoolList =
+                executingPool.entrySet().stream().sorted(Map.Entry.comparingByKey()).collect(Collectors.toList());
+        int ingSize = executingPoolList.size();
+        Integer ingMix = ingSize == 0 ? null : executingPoolList.get(0).getKey();
+
+        if (stop && preSize ==1 && preMixValue.size() ==1 && executingPool.size() ==0){
+            end()
+        }else if (tier != -1 && preparePool.get(tier).size() == overflowLine){
+            overflow().accept();//dangqian
+        }else if (tier == -1 &&(executingPool.size() == 0 || preMix < ingMix)){
+            overflow().//mix
         }
     }
 

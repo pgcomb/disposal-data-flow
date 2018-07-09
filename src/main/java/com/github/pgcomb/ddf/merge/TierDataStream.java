@@ -29,7 +29,7 @@ public class TierDataStream implements Tierable {
 
     @Override
     public int getTier() {
-        return 0;
+        return tier;
     }
 
     @Override
