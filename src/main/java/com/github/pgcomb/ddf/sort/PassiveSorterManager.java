@@ -56,6 +56,7 @@ public class PassiveSorterManager<T extends Comparable<?>> extends Conveyor<InMe
     public PassiveSorterManager(SortOutStrategy<InMemoryDataPackage<T>, PackageMetadata> sortOutStrategy, Inform<StreamDataPackage> inform) {
         this.sortOutStrategy = sortOutStrategy;
         this.inform = inform;
+        inform.preStop(this);
         init();
     }
     private void initPool() {
@@ -65,7 +66,7 @@ public class PassiveSorterManager<T extends Comparable<?>> extends Conveyor<InMe
                 new LinkedBlockingQueue<>(1), namedThreadFactory, (r, executor1) -> {
             if (!CollectionUtils.isEmpty(executor1.getQueue())) {
                 try {
-                    Thread.sleep(500L);
+                    Thread.sleep(50L);
                 } catch (InterruptedException e) {
                     log.error("sleep is false", e);
                     Thread.currentThread().interrupt();

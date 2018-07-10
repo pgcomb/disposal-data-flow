@@ -53,13 +53,13 @@ public class DefaultMaterialStorage implements MaterialStorage<FileDatePackage, 
     }
 
     @Override
-    public Consumer<TierDataStream> overflow() {
-        return overflow;
+    public void overflow(Consumer<TierDataStream> overflow) {
+        this.overflow = overflow;
     }
 
     @Override
-    public Consumer<FileDatePackage> end() {
-        return end;
+    public void end(Consumer<FileDatePackage> end) {
+        this.end = end;
     }
 
     @Override
@@ -121,19 +121,19 @@ public class DefaultMaterialStorage implements MaterialStorage<FileDatePackage, 
         if (stop && preSize == 1 && preMixValue.size() == 1 && executingPool.size() == 0) {
             FileDatePackage fileDatePackage = preMixValue.get(0);
             preparePool.remove(preMix);
-            end().accept(fileDatePackage);
+            end.accept(fileDatePackage);
         } else if (tier != -1 && preparePool.get(tier).size() == overflowLine) {
             TierDataStream tierDataStream = new TierDataStream(tier + 1, preparePool.get(tier), new FileDatePackage(getFile(tier + 1)));
             preparePool.remove(preMix);
             List<TierDataStream> fileDatePackages = executingPool.computeIfAbsent(tier + 1, k -> new ArrayList<>());
             fileDatePackages.add(tierDataStream);
-            overflow().accept(tierDataStream);
+            overflow.accept(tierDataStream);
         } else if ((tier == -1 || stop) && preMix!=null && (ingMix == null || preMix < ingMix)) {
             TierDataStream tierDataStream = new TierDataStream(preMix + 1, preMixValue, new FileDatePackage(getFile(preMix + 1)));
             preparePool.remove(preMix);
             List<TierDataStream> fileDatePackages = executingPool.computeIfAbsent(preMix + 1, k -> new ArrayList<>());
             fileDatePackages.add(tierDataStream);
-            overflow().accept(tierDataStream);
+            overflow.accept(tierDataStream);
         }
     }
 

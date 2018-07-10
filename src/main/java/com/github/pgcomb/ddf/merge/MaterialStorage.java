@@ -8,9 +8,9 @@ import java.util.function.Consumer;
  */
 public interface MaterialStorage<S,T> {
 
-    Consumer<T> overflow();
+    void overflow(Consumer<T> overflow);
 
-    Consumer<S> end();
+    void end(Consumer<S> end);
 
     void stop();
 

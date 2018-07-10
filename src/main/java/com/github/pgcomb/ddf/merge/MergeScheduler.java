@@ -4,19 +4,29 @@ import com.github.pgcomb.ddf.common.Inform;
 import com.github.pgcomb.ddf.common.StopFeedBack;
 import com.github.pgcomb.ddf.common.packagee.StreamDataPackage;
 
-public class MergeScheduler<T extends StreamDataPackage> implements Inform<T> {
+import java.util.function.Consumer;
 
-    private MaterialStorage materialStorage;
+public class MergeScheduler<T extends StreamDataPackage,G> implements Inform<T> {
 
-    private MergeStrategy mergeStrategy;
+    private MaterialStorage<T,G> materialStorage;
+
+    private MergeStrategy<G,?> mergeStrategy;
+
+    private Consumer<T> out;
+
+    public MergeScheduler(MaterialStorage<T,G> materialStorage, MergeStrategy<G,?> mergeStrategy, Consumer<T> out) {
+        this.materialStorage = materialStorage;
+        this.mergeStrategy.preStop(this);
+        this.mergeStrategy = mergeStrategy;
+        this.mergeStrategy.output(materialStorage::back);
+        this.materialStorage.end(MergeScheduler.this::materialStorageEnd);
+        this.materialStorage.overflow(mergeStrategy::accept);
+        this.out = out;
+    }
 
     private boolean stop;
 
     private StopFeedBack stopFeedBack;
-
-    public void submitTask(){
-
-    }
 
     @Override
     public void stopBack() {
@@ -24,6 +34,14 @@ public class MergeScheduler<T extends StreamDataPackage> implements Inform<T> {
         if (stopFeedBack != null && !stopFeedBack.isStop()){
             stopFeedBack.stopBack();
         }
+        this.materialStorage.stop();
+    }
+
+    private void materialStorageEnd(T consumer){
+        if (mergeStrategy != null && !mergeStrategy.isStop()){
+            this.mergeStrategy.stopForward();
+        }
+        out.accept(consumer);
     }
 
     @Override
@@ -34,7 +52,7 @@ public class MergeScheduler<T extends StreamDataPackage> implements Inform<T> {
     @Override
     public void stopForward() {
         this.stop = true;
-        mergeStrategy.stopForward();
+        this.materialStorage.stop();
 
     }
 
@@ -45,6 +63,8 @@ public class MergeScheduler<T extends StreamDataPackage> implements Inform<T> {
 
     @Override
     public void accept(T t) {
-
+        if (!stop) {
+            materialStorage.add(t);
+        }
     }
 }
