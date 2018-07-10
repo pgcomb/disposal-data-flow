@@ -35,6 +35,7 @@ public class MergeScheduler<T extends StreamDataPackage> implements Inform<T> {
     public void stopForward() {
         this.stop = true;
         mergeStrategy.stopForward();
+
     }
 
     @Override

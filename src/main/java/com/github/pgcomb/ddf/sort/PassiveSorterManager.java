@@ -39,7 +39,7 @@ public class PassiveSorterManager<T extends Comparable<?>> extends Conveyor<InMe
     private Consumer<Void> stopSortManagerThread;
 
     private void init() {
-        //初始化停止排序器的线程
+        //初始化设置停止排序器的线程
         StopSortManager stopSortManager = new StopSortManager(this);
         stopSortManagerThread = t -> new Thread(stopSortManager,stopSortManager.getName()).start();
     }
