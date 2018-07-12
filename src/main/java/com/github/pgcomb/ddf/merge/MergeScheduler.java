@@ -3,10 +3,14 @@ package com.github.pgcomb.ddf.merge;
 import com.github.pgcomb.ddf.common.Inform;
 import com.github.pgcomb.ddf.common.StopFeedBack;
 import com.github.pgcomb.ddf.common.packagee.StreamDataPackage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 
 public class MergeScheduler<T extends StreamDataPackage,G> implements Inform<T> {
+
+    private static final Logger log = LoggerFactory.getLogger(MergeScheduler.class);
 
     private MaterialStorage<T,G> materialStorage;
 
@@ -16,8 +20,8 @@ public class MergeScheduler<T extends StreamDataPackage,G> implements Inform<T> 
 
     public MergeScheduler(MaterialStorage<T,G> materialStorage, MergeStrategy<G,?> mergeStrategy, Consumer<T> out) {
         this.materialStorage = materialStorage;
-        this.mergeStrategy.preStop(this);
         this.mergeStrategy = mergeStrategy;
+        this.mergeStrategy.preStop(this);
         this.mergeStrategy.output(materialStorage::back);
         this.materialStorage.end(MergeScheduler.this::materialStorageEnd);
         this.materialStorage.overflow(mergeStrategy::accept);
@@ -38,6 +42,7 @@ public class MergeScheduler<T extends StreamDataPackage,G> implements Inform<T> 
     }
 
     private void materialStorageEnd(T consumer){
+        log.info("merge out:{}",consumer);
         if (mergeStrategy != null && !mergeStrategy.isStop()){
             this.mergeStrategy.stopForward();
         }
@@ -51,6 +56,7 @@ public class MergeScheduler<T extends StreamDataPackage,G> implements Inform<T> 
 
     @Override
     public void stopForward() {
+        log.info("merge scheduler stop forward");
         this.stop = true;
         this.materialStorage.stop();
 

@@ -41,8 +41,9 @@ public class PassiveSorterManager<T extends Comparable<?>> extends Conveyor<InMe
     private void init() {
         //初始化设置停止排序器的线程
         StopSortManager stopSortManager = new StopSortManager(this);
-        stopSortManagerThread = t -> new Thread(stopSortManager,stopSortManager.getName()).start();
+        stopSortManagerThread = t -> new Thread(stopSortManager, stopSortManager.getName()).start();
     }
+
     /**
      * 排序输出策略
      */
@@ -59,6 +60,7 @@ public class PassiveSorterManager<T extends Comparable<?>> extends Conveyor<InMe
         inform.preStop(this);
         init();
     }
+
     private void initPool() {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
                 .setNameFormat("sorter-pool-%d").build();
@@ -71,18 +73,18 @@ public class PassiveSorterManager<T extends Comparable<?>> extends Conveyor<InMe
                     log.error("sleep is false", e);
                     Thread.currentThread().interrupt();
                 }
-            } else {
-                executor1.execute(r);
             }
+            executor1.submit(r);
         });
     }
 
     @Override
     public InMemoryDataPackage<T> sort(InMemoryDataPackage<T> bag) {
-        if (!isStop() && executor == null){
+        log.info("sort manager add:{}", bag.serialNumber());
+        if (!isStop() && executor == null) {
             initPool();
         }
-        executor.execute(new SortWorker(bag,new SortCallBack(sortOutStrategy,inform),stopSortManagerThread));
+        executor.submit(new SortWorker(bag, new SortCallBack(sortOutStrategy, inform), stopSortManagerThread));
         return bag;
     }
 
@@ -101,7 +103,7 @@ public class PassiveSorterManager<T extends Comparable<?>> extends Conveyor<InMe
         inform.stopForward();
     }
 
-    private void poolStop(){
+    private void poolStop() {
         if (executor != null && !executor.isShutdown()) {
             executor.shutdown();
             try {

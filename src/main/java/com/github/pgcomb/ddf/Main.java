@@ -6,12 +6,11 @@ import com.github.pgcomb.ddf.common.StopFeedBack;
 import com.github.pgcomb.ddf.common.packagee.FileDatePackage;
 import com.github.pgcomb.ddf.common.packagee.InMemoryDataPackage;
 import com.github.pgcomb.ddf.common.packagee.StreamDataPackage;
-import com.github.pgcomb.ddf.def.DefaultPipelineSucker;
-import com.github.pgcomb.ddf.def.FileBucket;
-import com.github.pgcomb.ddf.def.SplitMapper;
+import com.github.pgcomb.ddf.def.*;
 import com.github.pgcomb.ddf.map.MapPair;
 import com.github.pgcomb.ddf.map.api.Payload;
 import com.github.pgcomb.ddf.map.api.Principal;
+import com.github.pgcomb.ddf.merge.*;
 import com.github.pgcomb.ddf.press.PipePacking;
 import com.github.pgcomb.ddf.sort.PassiveSorterManager;
 import com.github.pgcomb.ddf.sort.strategy.MapPairSortFileOutStrategy;
@@ -66,7 +65,7 @@ public class Main {
     }
     public static void test2(){
         {
-            FileBucket fileBucket = new FileBucket(new File("D:\\test"));
+            FileBucket fileBucket = new FileBucket(new File("E:\\test"));
 
             DefaultPipelineSucker defaultPipelineSucker3 = new DefaultPipelineSucker("3");
 
@@ -76,7 +75,13 @@ public class Main {
             SplitMapper splitMapper = new SplitMapper("-");
             SortOutStrategy<InMemoryDataPackage<MapPair<Principal, Payload>>, FileDatePackage> mapPairSortFileOutStrategy = new MapPairSortFileOutStrategy();
 
-            PassiveSorterManager<MapPair<Principal, Payload>> passiveSorterManager = new PassiveSorterManager(mapPairSortFileOutStrategy, new NullInform());
+
+            DefaultMaterialStorage defaultMaterialStorage = new DefaultMaterialStorage();
+            MergeStrategy mergeStrategy = new StringKVMerageStrategy("-");
+
+            MergeScheduler<FileDatePackage,TierDataStream> mergeScheduler = new MergeScheduler<>(defaultMaterialStorage,mergeStrategy,System.out::println);
+
+            PassiveSorterManager<MapPair<Principal, Payload>> passiveSorterManager = new PassiveSorterManager(mapPairSortFileOutStrategy, mergeScheduler);
 
             defaultPipelineSucker3.addPipeline(new DefaultPipelineSucker("4"));
 

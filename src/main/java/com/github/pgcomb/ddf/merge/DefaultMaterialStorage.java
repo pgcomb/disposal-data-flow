@@ -39,8 +39,7 @@ public class DefaultMaterialStorage implements MaterialStorage<FileDatePackage, 
 
     private Consumer<FileDatePackage> end;
 
-    public DefaultMaterialStorage(Consumer<FileDatePackage> end) {
-        this.end = end;
+    public DefaultMaterialStorage() {
         init();
     }
 
@@ -81,10 +80,12 @@ public class DefaultMaterialStorage implements MaterialStorage<FileDatePackage, 
 
     @Override
     public void back(TierDataStream materials) {
+        log.info("MaterialStorage back :{}",materials.getMergePackage().getFile());
         synchronized (lock) {
             int tier = materials.getTier();
             if (!CollectionUtils.isEmpty(preparePool) || !CollectionUtils.isEmpty(executingPool)) {
-                List<FileDatePackage> fileDatePackages = preparePool.computeIfAbsent(tier, k -> new ArrayList<>());
+                List<FileDatePackage> fileDatePackages1 = preparePool.get(new Integer(tier));
+                List<FileDatePackage> fileDatePackages = preparePool.computeIfAbsent(new Integer(tier), k -> new ArrayList<>());
 
                 List<TierDataStream> tierDataStreams = executingPool.get(tier);
                 tierDataStreams.remove(materials);
@@ -99,6 +100,7 @@ public class DefaultMaterialStorage implements MaterialStorage<FileDatePackage, 
 
     @Override
     public void add(FileDatePackage t) {
+        log.info("MaterialStorage add :{}",t.getFile());
         synchronized (lock) {
             List<FileDatePackage> fileDatePackages = preparePool.computeIfAbsent(0, k -> new ArrayList<>());
             fileDatePackages.add(t);
@@ -107,6 +109,7 @@ public class DefaultMaterialStorage implements MaterialStorage<FileDatePackage, 
     }
 
     private void examine(int tier) {
+        System.out.println("asfasdfsadf"+preparePool.get(new Integer(tier)));
         List<Map.Entry<Integer, List<FileDatePackage>>> preparePoolList =
                 preparePool.entrySet().stream().sorted(Map.Entry.comparingByKey()).collect(Collectors.toList());
         int preSize = preparePoolList.size();
@@ -122,7 +125,8 @@ public class DefaultMaterialStorage implements MaterialStorage<FileDatePackage, 
             FileDatePackage fileDatePackage = preMixValue.get(0);
             preparePool.remove(preMix);
             end.accept(fileDatePackage);
-        } else if (tier != -1 && preparePool.get(tier).size() == overflowLine) {
+
+        } else if (tier != -1 && preparePool.get(new Integer(tier)).size() == overflowLine) {
             TierDataStream tierDataStream = new TierDataStream(tier + 1, preparePool.get(tier), new FileDatePackage(getFile(tier + 1)));
             preparePool.remove(preMix);
             List<TierDataStream> fileDatePackages = executingPool.computeIfAbsent(tier + 1, k -> new ArrayList<>());
@@ -161,7 +165,8 @@ public class DefaultMaterialStorage implements MaterialStorage<FileDatePackage, 
             }
         });
 
-        DefaultMaterialStorage defaultMaterialStorage = new DefaultMaterialStorage(System.out::println);
+        DefaultMaterialStorage defaultMaterialStorage = new DefaultMaterialStorage();
+        defaultMaterialStorage.end(System.out::println);
         defaultMaterialStorage.setOverflow(tierDataStream -> {
             try {
                 Thread.sleep(50);

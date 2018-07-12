@@ -61,9 +61,8 @@ public abstract class AbstractKVTierMergeStrategy<K extends Principal, V extends
                     log.error("sleep is false", e);
                     Thread.currentThread().interrupt();
                 }
-            } else {
-                executor1.execute(r);
             }
+            executor1.submit(r);
         });
     }
 
@@ -119,6 +118,7 @@ public abstract class AbstractKVTierMergeStrategy<K extends Principal, V extends
 
         @Override
         public void run() {
+            log.info("start merge :{}", tierDataStream);
             List<FileDatePackage> streamDataPackage = tierDataStream.getStreamDataPackage();
 
             List<BufferedReader> brs = new ArrayList<>();
@@ -137,6 +137,7 @@ public abstract class AbstractKVTierMergeStrategy<K extends Principal, V extends
                         log.error("write file error", e);
                     }
                 });
+                output.accept(tierDataStream);
             } catch (Exception e) {
                 log.error("merge error", e);
                 stopThread.accept(null);

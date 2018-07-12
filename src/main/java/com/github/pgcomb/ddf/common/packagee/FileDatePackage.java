@@ -42,7 +42,7 @@ public class FileDatePackage implements StreamDataPackage,Fileable {
 
     @Override
     public OutputStream outputStream() throws FileNotFoundException {
-        return null;
+        return new FileOutputStream(getFile());
     }
 
     @Override
