@@ -43,6 +43,10 @@ public class MapPair<K extends Principal,P extends Payload>
         this.payload = payload;
     }
 
+    public String getSeparator() {
+        return separator;
+    }
+
     public String strValue(){
         return principal.strValue().concat(separator).concat(payload.strValue());
     }

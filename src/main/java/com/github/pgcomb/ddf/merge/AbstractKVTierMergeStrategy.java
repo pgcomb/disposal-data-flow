@@ -1,7 +1,7 @@
 package com.github.pgcomb.ddf.merge;
 
 import com.github.pgcomb.ddf.common.StopFeedBack;
-import com.github.pgcomb.ddf.common.packagee.FileDatePackage;
+import com.github.pgcomb.ddf.common.packagee.FileDataPackage;
 import com.github.pgcomb.ddf.map.MapPair;
 import com.github.pgcomb.ddf.map.api.Payload;
 import com.github.pgcomb.ddf.map.api.Principal;
@@ -80,6 +80,14 @@ public abstract class AbstractKVTierMergeStrategy<K extends Principal, V extends
     @Override
     public void stopForward() {
 
+        this.stop = true;
+        poolStop();
+
+    }
+
+    @Override
+    public void stop() {
+
     }
 
     @Override
@@ -98,6 +106,20 @@ public abstract class AbstractKVTierMergeStrategy<K extends Principal, V extends
     @Override
     public void output(Consumer<TierDataStream> o) {
         exporter = o;
+    }
+
+    private void poolStop() {
+        if (executor != null && !executor.isShutdown()) {
+            executor.shutdown();
+            try {
+                while (!executor.awaitTermination(2, TimeUnit.SECONDS)) {
+                    log.info("wait for the thread pool task to end.");
+                }
+            } catch (InterruptedException e) {
+                log.error("close pool is error!", e);
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
     class Work implements Runnable {
@@ -119,12 +141,12 @@ public abstract class AbstractKVTierMergeStrategy<K extends Principal, V extends
         @Override
         public void run() {
             log.info("start merge :{}", tierDataStream);
-            List<FileDatePackage> streamDataPackage = tierDataStream.getStreamDataPackage();
+            List<FileDataPackage> streamDataPackage = tierDataStream.getStreamDataPackage();
 
             List<BufferedReader> brs = new ArrayList<>();
             try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(tierDataStream.getMergePackage().outputStream()))
             ) {
-                for (FileDatePackage fp : streamDataPackage) {
+                for (FileDataPackage fp : streamDataPackage) {
                     brs.add(new BufferedReader(new InputStreamReader(fp.inputStream())));
                 }
                 ReadMore readMore = new ReadMore(brs);

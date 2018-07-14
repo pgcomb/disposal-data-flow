@@ -1,6 +1,6 @@
 package com.github.pgcomb.ddf.sort.strategy;
 
-import com.github.pgcomb.ddf.common.packagee.FileDatePackage;
+import com.github.pgcomb.ddf.common.packagee.FileDataPackage;
 import com.github.pgcomb.ddf.common.packagee.InMemoryDataPackage;
 import com.github.pgcomb.ddf.exception.SortOutException;
 import com.github.pgcomb.ddf.map.MapPair;
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
  *
  * @author 王东旭
  */
-public class MapPairSortFileOutStrategy implements SortOutStrategy<InMemoryDataPackage<MapPair<Principal, Payload>>, FileDatePackage> {
+public class MapPairSortFileOutStrategy implements SortOutStrategy<InMemoryDataPackage<MapPair<Principal, Payload>>, FileDataPackage> {
 
     private static final Logger log = LoggerFactory.getLogger(MapPairSortFileOutStrategy.class);
 
@@ -45,10 +45,10 @@ public class MapPairSortFileOutStrategy implements SortOutStrategy<InMemoryDataP
     }
 
     @Override
-    public FileDatePackage export(InMemoryDataPackage<MapPair<Principal, Payload>> inMemoryDataPackage) throws SortOutException {
+    public FileDataPackage export(InMemoryDataPackage<MapPair<Principal, Payload>> inMemoryDataPackage) throws SortOutException {
 
         LocalDateTime start = LocalDateTime.now();
-        FileDatePackage fileDatePackage = new FileDatePackage(getFile(inMemoryDataPackage), inMemoryDataPackage);
+        FileDataPackage fileDataPackage = new FileDataPackage(getFile(inMemoryDataPackage), inMemoryDataPackage);
         try (BufferedWriter bufferedWriter = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(getFile(inMemoryDataPackage)), "utf-8"))) {
             for (MapPair mapPair:inMemoryDataPackage.getData()) {
@@ -60,8 +60,8 @@ public class MapPairSortFileOutStrategy implements SortOutStrategy<InMemoryDataP
         }
         log.info("export package[serialNumber:{},start:{},end{},size{}]:{}",inMemoryDataPackage.serialNumber(),
                 inMemoryDataPackage.start(),inMemoryDataPackage.end(),inMemoryDataPackage.size(), Duration.between(start,LocalDateTime.now()));
-        log.debug("export:{}",fileDatePackage);
-        return fileDatePackage;
+        log.debug("export:{}", fileDataPackage);
+        return fileDataPackage;
     }
 
     public File getFile(InMemoryDataPackage p) {

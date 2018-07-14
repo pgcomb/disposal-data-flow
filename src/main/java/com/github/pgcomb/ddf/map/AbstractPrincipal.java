@@ -35,8 +35,8 @@ public abstract class AbstractPrincipal<T> implements Principal<T> {
     }
 
     @Override
-    public final boolean same(T t) {
-        return same(principal,t);
+    public final boolean same(Principal<T> t) {
+        return same(this,t);
     }
 
     /**
@@ -45,7 +45,7 @@ public abstract class AbstractPrincipal<T> implements Principal<T> {
      * @param other 其他
      * @return 是否相等
      */
-    public abstract boolean same(T oneself,T other);
+    public abstract boolean same(Principal<T> oneself,Principal<T> other);
 
     @Override
     public int compareTo(Principal<T> o) {

@@ -3,10 +3,14 @@ package com.github.pgcomb.ddf;
 import com.github.pgcomb.ddf.bucket.sucker.PipeSucker;
 import com.github.pgcomb.ddf.common.Inform;
 import com.github.pgcomb.ddf.common.StopFeedBack;
-import com.github.pgcomb.ddf.common.packagee.FileDatePackage;
+import com.github.pgcomb.ddf.common.StrMapPirStrStrConvertor;
+import com.github.pgcomb.ddf.common.packagee.FileDataPackage;
 import com.github.pgcomb.ddf.common.packagee.InMemoryDataPackage;
 import com.github.pgcomb.ddf.common.packagee.StreamDataPackage;
 import com.github.pgcomb.ddf.def.*;
+import com.github.pgcomb.ddf.group.GroupBucket;
+import com.github.pgcomb.ddf.group.GroupSucker;
+import com.github.pgcomb.ddf.map.DefaultMapper;
 import com.github.pgcomb.ddf.map.MapPair;
 import com.github.pgcomb.ddf.map.api.Payload;
 import com.github.pgcomb.ddf.map.api.Principal;
@@ -72,23 +76,34 @@ public class Main {
             DefaultPipelineSucker defaultPipelineSucker2 = new DefaultPipelineSucker("2");
             defaultPipelineSucker2.addPipeline(new DefaultPipelineSucker("5"));
 
+            StrMapPirStrStrConvertor strMapPirStrStrConvertor = new StrMapPirStrStrConvertor("-");
+
             SplitMapper splitMapper = new SplitMapper("-");
-            SortOutStrategy<InMemoryDataPackage<MapPair<Principal, Payload>>, FileDatePackage> mapPairSortFileOutStrategy = new MapPairSortFileOutStrategy();
+            DefaultMapper<StringPrincipal, StringPayload> strMapper = new DefaultMapper<>(strMapPirStrStrConvertor);
+
+            SortOutStrategy<InMemoryDataPackage<MapPair<Principal, Payload>>, FileDataPackage> mapPairSortFileOutStrategy = new MapPairSortFileOutStrategy();
 
 
             DefaultMaterialStorage defaultMaterialStorage = new DefaultMaterialStorage();
-            MergeStrategy mergeStrategy = new StringKVMerageStrategy("-");
 
-            MergeScheduler<FileDatePackage,TierDataStream> mergeScheduler = new MergeScheduler<>(defaultMaterialStorage,mergeStrategy,System.out::println);
+            MergeStrategy mergeStrategy = new StringKVMergeStrategy("-");
+            MergeStrategy mergeStrategy1 = new KVMergeStrategy(strMapPirStrStrConvertor);
 
-            PassiveSorterManager<MapPair<Principal, Payload>> passiveSorterManager = new PassiveSorterManager(mapPairSortFileOutStrategy, mergeScheduler);
+            GroupSucker<StringPrincipal, StringPayload> principalPayloadGroupSucker = new GroupSucker<>(new File("E://testresut/a.txt"));
+            GroupBucket<StringPrincipal, StringPayload> stringPrincipalStringPayloadGroupBucket = new GroupBucket<>(strMapPirStrStrConvertor);
+            stringPrincipalStringPayloadGroupBucket.addPipe(principalPayloadGroupSucker);
+
+            MergeScheduler<FileDataPackage,TierDataStream> mergeScheduler = new MergeScheduler<>(defaultMaterialStorage,mergeStrategy,stringPrincipalStringPayloadGroupBucket::inject);
+
+            PassiveSorterManager<MapPair<StringPrincipal, StringPayload>> passiveSorterManager = new PassiveSorterManager(mapPairSortFileOutStrategy, mergeScheduler);
 
             defaultPipelineSucker3.addPipeline(new DefaultPipelineSucker("4"));
 
-            PipePacking<MapPair<Principal,Payload>> mapPairPipePacking = new PipePacking<>(passiveSorterManager);
+            PipePacking<MapPair<StringPrincipal, StringPayload>> mapPairPipePacking = new PipePacking<>(passiveSorterManager);
 
-            splitMapper.addPipeline(mapPairPipePacking);
-            defaultPipelineSucker3.addPipeline(splitMapper);
+            strMapper.addPipeline(mapPairPipePacking);
+            //splitMapper.addPipeline(mapPairPipePacking);
+            defaultPipelineSucker3.addPipeline(strMapper);
 
             fileBucket.addPipe(new DefaultPipelineSucker("1"));
             fileBucket.addPipe(defaultPipelineSucker2);

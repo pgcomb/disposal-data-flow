@@ -5,7 +5,7 @@ import org.springframework.util.Assert;
 
 import java.io.*;
 
-public class FileDatePackage implements StreamDataPackage,Fileable {
+public class FileDataPackage implements StreamDataPackage,Fileable {
 
     private File file;
 
@@ -17,7 +17,7 @@ public class FileDatePackage implements StreamDataPackage,Fileable {
 
     private int serialNumber;
 
-    public FileDatePackage(File file,PackageMetadata packageMetadata) {
+    public FileDataPackage(File file, PackageMetadata packageMetadata) {
         Assert.notNull(file,"file can not null");
         this.file = file;
         this.start = packageMetadata.start();
@@ -26,7 +26,7 @@ public class FileDatePackage implements StreamDataPackage,Fileable {
         this.size = packageMetadata.size();
     }
 
-    public FileDatePackage(File file) {
+    public FileDataPackage(File file) {
         this.file = file;
     }
 
@@ -67,7 +67,7 @@ public class FileDatePackage implements StreamDataPackage,Fileable {
 
     @Override
     public String toString() {
-        return "FileDatePackage{" +
+        return "FileDataPackage{" +
                 "file=" + file +
                 ", start=" + start +
                 ", end=" + end +

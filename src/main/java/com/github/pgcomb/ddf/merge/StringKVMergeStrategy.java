@@ -4,11 +4,15 @@ import com.github.pgcomb.ddf.def.StringPayload;
 import com.github.pgcomb.ddf.def.StringPrincipal;
 import com.github.pgcomb.ddf.map.MapPair;
 
-public class StringKVMerageStrategy extends AbstractKVTierMergeStrategy<StringPrincipal,StringPayload> {
+/**
+ * @deprecated {@link KVMergeStrategy}
+ */
+@Deprecated
+public class StringKVMergeStrategy extends AbstractKVTierMergeStrategy<StringPrincipal,StringPayload> {
 
     private String separator;
 
-    public StringKVMerageStrategy(String separator) {
+    public StringKVMergeStrategy(String separator) {
         this.separator = separator;
     }
 

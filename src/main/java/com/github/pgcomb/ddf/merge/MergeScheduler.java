@@ -44,6 +44,7 @@ public class MergeScheduler<T extends StreamDataPackage,G> implements Inform<T> 
     private void materialStorageEnd(T consumer){
         log.info("merge out:{}",consumer);
         if (mergeStrategy != null && !mergeStrategy.isStop()){
+            log.info("merge scheduler stop forward merge strategy");
             this.mergeStrategy.stopForward();
         }
         out.accept(consumer);

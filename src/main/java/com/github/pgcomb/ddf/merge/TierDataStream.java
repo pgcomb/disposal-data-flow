@@ -1,7 +1,7 @@
 package com.github.pgcomb.ddf.merge;
 
 import com.github.pgcomb.ddf.common.Tierable;
-import com.github.pgcomb.ddf.common.packagee.FileDatePackage;
+import com.github.pgcomb.ddf.common.packagee.FileDataPackage;
 
 import java.util.List;
 
@@ -9,21 +9,21 @@ public class TierDataStream implements Tierable {
 
     private int tier;
 
-    private List<FileDatePackage> streamDataPackage;
+    private List<FileDataPackage> streamDataPackage;
 
-    private FileDatePackage mergePackage;
+    private FileDataPackage mergePackage;
 
-    public TierDataStream(int tier, List<FileDatePackage> streamDataPackage,FileDatePackage fileDatePackage) {
+    public TierDataStream(int tier, List<FileDataPackage> streamDataPackage, FileDataPackage fileDataPackage) {
         this.tier = tier;
         this.streamDataPackage = streamDataPackage;
-        this.mergePackage = fileDatePackage;
+        this.mergePackage = fileDataPackage;
     }
 
-    public List<FileDatePackage> getStreamDataPackage() {
+    public List<FileDataPackage> getStreamDataPackage() {
         return streamDataPackage;
     }
 
-    public FileDatePackage getMergePackage() {
+    public FileDataPackage getMergePackage() {
         return mergePackage;
     }
 

@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
  * 字符串分割mapper
  *
  * @author 王东旭
+ * @deprecated {@link com.github.pgcomb.ddf.map.DefaultMapper}
  */
+@Deprecated
 public class SplitMapper extends AbstractPipelineMapper<String, Principal, Payload> {
 
     private static final Logger log = LoggerFactory.getLogger(SplitMapper.class);
