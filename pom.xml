@@ -6,7 +6,7 @@
 
     <groupId>com.github.pgcomb</groupId>
     <artifactId>disposal-data-flow</artifactId>
-    <version>0.0-1</version>
+    <version>0.0.1</version>
 
     <dependencies>
         <dependency>
