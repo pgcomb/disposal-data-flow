@@ -50,7 +50,9 @@ public class GroupSucker<K extends Principal,V extends Payload> extends Abstract
     @Override
     public void stopEvent() {
         try {
-            bufferedWriter.close();
+            if (bufferedWriter != null){
+                bufferedWriter.close();
+            }
         } catch (IOException e) {
             log.error("close writer error",e);
         }

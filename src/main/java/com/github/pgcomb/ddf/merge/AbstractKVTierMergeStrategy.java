@@ -138,19 +138,21 @@ public abstract class AbstractKVTierMergeStrategy<K extends Principal, V extends
             this.output = output;
         }
 
+        private List<BufferedReader> brs(List<FileDataPackage> fileDataPackages) throws FileNotFoundException {
+            List<BufferedReader> brs = new ArrayList<>();
+            for (FileDataPackage fp : fileDataPackages) {
+                brs.add(new BufferedReader(new InputStreamReader(fp.inputStream())));
+            }
+            return brs;
+        }
         @Override
         public void run() {
             log.info("start merge :{}", tierDataStream);
-            List<FileDataPackage> streamDataPackage = tierDataStream.getStreamDataPackage();
+            List<FileDataPackage> fileDataPackages = tierDataStream.getStreamDataPackage();
 
-            List<BufferedReader> brs = new ArrayList<>();
-            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(tierDataStream.getMergePackage().outputStream()))
+            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(tierDataStream.getMergePackage().outputStream()));
+                 ReadMore readMore = new ReadMore(brs(fileDataPackages))
             ) {
-                for (FileDataPackage fp : streamDataPackage) {
-                    brs.add(new BufferedReader(new InputStreamReader(fp.inputStream())));
-                }
-                ReadMore readMore = new ReadMore(brs);
-
                 readMore.read(d -> {
                     try {
                         bw.write(d.strValue());
@@ -163,19 +165,11 @@ public abstract class AbstractKVTierMergeStrategy<K extends Principal, V extends
             } catch (Exception e) {
                 log.error("merge error", e);
                 stopThread.accept(null);
-            } finally {
-                brs.forEach(bufferedReader -> {
-                    try {
-                        bufferedReader.close();
-                    } catch (IOException e) {
-                        log.error("close file error", e);
-                    }
-                });
             }
         }
     }
 
-    private class ReadMore {
+    private class ReadMore implements AutoCloseable {
 
         private BufferedReader[] brs;
         private Map<Integer, MapPair<K, V>> values;
@@ -214,6 +208,21 @@ public abstract class AbstractKVTierMergeStrategy<K extends Principal, V extends
                 }
             }
 
+        }
+
+        @Override
+        public void close() {
+            Optional.of(Arrays.stream(brs)).ifPresent(bufferedReaderStream -> {
+                bufferedReaderStream.forEach(bufferedReader -> {
+                    try {
+                        if (bufferedReader != null){
+                            bufferedReader.close();
+                        }
+                    } catch (IOException e) {
+                        log.error("close file error", e);
+                    }
+                });
+            });
         }
     }
 }

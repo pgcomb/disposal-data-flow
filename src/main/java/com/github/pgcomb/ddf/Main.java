@@ -69,7 +69,7 @@ public class Main {
     }
     public static void test2(){
         {
-            FileBucket fileBucket = new FileBucket(new File("E:\\test"));
+            FileBucket fileBucket = new FileBucket(new File("D:\\test"));
 
             DefaultPipelineSucker defaultPipelineSucker3 = new DefaultPipelineSucker("3");
 
@@ -89,7 +89,7 @@ public class Main {
             MergeStrategy mergeStrategy = new StringKVMergeStrategy("-");
             MergeStrategy mergeStrategy1 = new KVMergeStrategy(strMapPirStrStrConvertor);
 
-            GroupSucker<StringPrincipal, StringPayload> principalPayloadGroupSucker = new GroupSucker<>(new File("E://testresut/a.txt"));
+            GroupSucker<StringPrincipal, StringPayload> principalPayloadGroupSucker = new GroupSucker<>(new File("D://testresut/a.txt"));
             GroupBucket<StringPrincipal, StringPayload> stringPrincipalStringPayloadGroupBucket = new GroupBucket<>(strMapPirStrStrConvertor);
             stringPrincipalStringPayloadGroupBucket.addPipe(principalPayloadGroupSucker);
 
